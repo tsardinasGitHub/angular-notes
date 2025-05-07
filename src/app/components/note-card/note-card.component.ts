@@ -101,13 +101,27 @@ export class NoteCardComponent {
   updateTitle(id: string | undefined, event: Event) {
     if (id) {
       const newTitle = (event.target as HTMLInputElement).value;
-      this.noteService.updateTitle(id, newTitle);
+      const currentNote = this.note();
+      if (currentNote) {
+        const updatedNote: Note = { ...currentNote, title: newTitle };
+        this.noteService.updateNote(updatedNote).subscribe({
+          next: () => this.refreshNotes(),
+          error: (error) => console.error('Failed to update note title:', error)
+        });
+      }
     }
   }
 
   updateMarked(id: string | undefined) {
     if (id) {
-      this.noteService.updateMarked(id);
+      const currentNote = this.note();
+      if (currentNote) {
+        const updatedNote: Note = { ...currentNote, marked: !currentNote.marked };
+        this.noteService.updateNote(updatedNote).subscribe({
+          next: () => this.refreshNotes(),
+          error: (error) => console.error('Failed to update note marked state:', error)
+        });
+      }
     }
   }
 
