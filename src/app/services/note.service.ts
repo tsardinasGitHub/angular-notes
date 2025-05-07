@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class NoteService {
-  readonly API_URL = 'https://cab4019b5a8beb1e1d31.free.beeceptor.com/api/notes/';
+  readonly API_URL = 'https://ca250a7b462d1b78ab97.free.beeceptor.com/api/notes/';
 
   notes: Note[];
 
