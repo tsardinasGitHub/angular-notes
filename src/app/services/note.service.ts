@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class NoteService {
-  readonly API_URL = 'https://ca99c38344dd34123476.free.beeceptor.com/api/notes/';
+  readonly API_URL = 'https://ca250a7b462d1b78ab97.free.beeceptor.com/api/notes/';
 
   notes: Note[];
 
@@ -37,7 +37,7 @@ export class NoteService {
   }
 
   deleteNote(id: string) {
-    this.notes = this.notes.filter((note) => note.id !== id);
+    return this.http.delete(`${this.API_URL}${id}`);
   }
 
   createNote(title: string) {
@@ -47,5 +47,12 @@ export class NoteService {
       marked: false
     };
     return this.http.post<Note>(this.API_URL, note);
+  }
+
+  updateNote(note: Note) {
+    if (note.id && note.title !== undefined && note.marked !== undefined) {
+      return this.http.put<Note>(`${this.API_URL}${note.id}`, note);
+    }
+    throw new Error('Invalid note data provided');
   }
 }
