@@ -9,6 +9,16 @@ import { NoteService } from '../../services/note.service';
     <article class="note-card">
       <input type="text" [value]="note()?.title" class="card-title" (input)="updateTitle(note()?.id, $event)"/>
       <input type="checkbox" [checked]="note()?.marked" (input)="updateMarked(note()?.id)"/>
+      <button
+        type="button"
+        class="delete-btn"
+        aria-label="Delete note"
+        (click)="deleteNote(note()?.id)"
+      >
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 6L14 14M6 14L14 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
     </article>
   `,
   styles: `
@@ -53,6 +63,25 @@ import { NoteService } from '../../services/note.service';
       cursor: pointer;
       transition: accent-color 0.2s;
     }
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #ef4444;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-left: 8px;
+    }
+    .delete-btn:hover, .delete-btn:focus {
+      background: #fee2e2;
+      color: #b91c1c;
+      outline: none;
+    }
     .note-card:has(input:checked) {
       background: #f1f5f9;
       border: 1.5px solid #a3a3a3;
@@ -84,7 +113,25 @@ export class NoteCardComponent {
 
   deleteNote(id: string | undefined) {
     if (id) {
-      this.noteService.deleteNote(id);
+      this.noteService.deleteNote(id).subscribe({
+        next: () => {
+          this.refreshNotes();
+        },
+        error: (error) => {
+          console.error('Failed to delete note:', error);
+        }
+      });
     }
+  }
+
+  private refreshNotes() {
+    this.noteService.getNotes().subscribe({
+      next: (data) => {
+        this.noteService.notes = data.reverse();
+      },
+      error: (error) => {
+        console.error('Failed to refresh notes:', error);
+      }
+    });
   }
 }

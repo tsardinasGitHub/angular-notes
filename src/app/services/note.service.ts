@@ -37,7 +37,7 @@ export class NoteService {
   }
 
   deleteNote(id: string) {
-    this.notes = this.notes.filter((note) => note.id !== id);
+    return this.http.delete(`${this.API_URL}${id}`);
   }
 
   createNote(title: string) {
